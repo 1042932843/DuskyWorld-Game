@@ -106,6 +106,7 @@ project(":core") {
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        compile "org.mini2Dx:universal-tween-engine:6.3.3"//动画效果引擎
         
     }
 }
