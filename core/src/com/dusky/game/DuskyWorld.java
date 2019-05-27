@@ -9,8 +9,8 @@ public class DuskyWorld extends Game {
 	public static final String TITLE = "DuskyWorld";
 	public static final float MUSIC_VOLUME = 0.03f; //3%
 	public static final float SFX_VOLUME = 0.5f; //50%
-	public static final int WIDTH = 480;
-	public static final int HEIGHT = 800;
+	public static final int WIDTH = 800;
+	public static final int HEIGHT = 480;
 	
 	@Override
 	public void create () {
