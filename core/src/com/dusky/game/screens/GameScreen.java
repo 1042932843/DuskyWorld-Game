@@ -28,11 +28,11 @@ import static com.dusky.game.objects.weapon.Mode.MODE_LONG_RANGE_STRAIGHT;
 
 public class GameScreen implements Screen {
 
-  private static final String TAG = "GameScreen";
+  private static final String TAG = GameScreen.class.getSimpleName();
 
   private Stage stage;
   private World world;
-  private Vector2 velocity,acceleration;
+  private Vector2 acceleration;
   private static final float GRAVITY = -100f;
 
   private ArrayList<Player> teamA=new ArrayList<Player>();
@@ -93,8 +93,8 @@ public class GameScreen implements Screen {
     acceleration = new Vector2(0, GRAVITY);
     world = new World(acceleration, true);
     //使用伸展视口创建舞台
-    stage = new Stage(new StretchViewport(DuskyWorld.WIDTH, DuskyWorld.HEIGHT));
-    camera = new OrthographicCamera(DuskyWorld.WIDTH, DuskyWorld.HEIGHT);
+    stage = new Stage(new StretchViewport(GameConfig.WIDTH, GameConfig.HEIGHT));
+    camera = new OrthographicCamera(GameConfig.WIDTH, GameConfig.HEIGHT);
     createStaticBody();
     Player player=new Player("Dusky",100,new Weapon(1,1,MODE_LONG_RANGE_STRAIGHT), AssetLoader.PLAYER_ANIMATION,world);
     teamA.add(player);
@@ -134,7 +134,7 @@ public class GameScreen implements Screen {
     // Create our body definition
     BodyDef groundBodyDef = new BodyDef();
     // Set its world position
-    groundBodyDef.position.set(new Vector2(0, 20));
+    groundBodyDef.position.set(0,20);
 
     // Create a body from the defintion and add it to the world
     Body groundBody = world.createBody(groundBodyDef);
@@ -144,7 +144,7 @@ public class GameScreen implements Screen {
     // Set the polygon shape as a box which is twice the size of our view
     // port and 4 high
     // (setAsBox takes half-width and half-height as arguments)
-    groundBox.setAsBox(800, 2.0f);
+    groundBox.setAsBox(GameConfig.WIDTH, 2);
     // Create a fixture from our polygon shape and add it to our ground body
     groundBody.createFixture(groundBox, 0.0f);
     // Clean up after ourselves

@@ -9,11 +9,10 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.dusky.game.DuskyWorld;
+import com.dusky.game.config.GameConfig;
 import com.dusky.game.objects.weapon.Weapon;
 
 public class Player extends Actor {
-    private static final int VELOCITY_LIMIT = -345;
     private Body body;
 
     private int health;//角色当前血量
@@ -36,7 +35,7 @@ public class Player extends Actor {
         this.region = animation.getKeyFrame(0);
         setSize(this.region.getRegionWidth(), this.region.getRegionHeight());
         setName(name);
-        setPosition(DuskyWorld.WIDTH/2,DuskyWorld.HEIGHT/2);
+        setPosition(GameConfig.WIDTH/2,GameConfig.HEIGHT/2);
         body= createBox2dBody(world);
 
     }
