@@ -1,6 +1,7 @@
 package com.dusky.game.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.dusky.game.DuskyWorld;
 import com.dusky.game.config.GameConfig;
+import com.dusky.game.control.PlayerControl;
 import com.dusky.game.helpers.AssetLoader;
 import com.dusky.game.objects.Player;
 import com.dusky.game.objects.weapon.Weapon;
@@ -51,6 +53,11 @@ public class GameScreen implements Screen {
    * 遍历玩家列表，加入舞台
    */
   private void initPlayer(){
+      PlayerControl playerControl=new PlayerControl(teamA.get(0));
+      InputMultiplexer inputMultiplexer = new InputMultiplexer();//用来处理多个InputProcessor的情况
+      inputMultiplexer.addProcessor(playerControl);
+      Gdx.input.setInputProcessor(inputMultiplexer);
+
       for(Player player:teamA){
         stage.addActor(player);
       }

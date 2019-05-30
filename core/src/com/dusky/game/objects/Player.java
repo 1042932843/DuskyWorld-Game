@@ -40,6 +40,10 @@ public class Player extends Actor {
 
     }
 
+    public Body getBody() {
+        return body;
+    }
+
     public TextureRegion getRegion() {
         return region;
     }
@@ -83,6 +87,7 @@ public class Player extends Actor {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(getX(), getY());// 设置这个body初始位置
+        bodyDef.gravityScale=0.5f;
         Body body = world.createBody(bodyDef);
         CircleShape circle = new CircleShape();
         circle.setRadius(getWidth()/2);//半径
@@ -112,11 +117,11 @@ public class Player extends Actor {
             return;
         }
         if(body!=null){
-            setPosition(body.getPosition().x,body.getPosition().y);
+            setPosition(body.getPosition().x-getWidth()/2,body.getPosition().y-getHeight()/2);
         }
         batch.draw(
                 animation.getKeyFrame(runTime),
-                getX()-getWidth()/2, getY()-getHeight()/2,
+                getX(), getY(),
                 getOriginX(), getOriginY(),
                 getWidth(), getHeight(),
                 getScaleX(), getScaleY(),
