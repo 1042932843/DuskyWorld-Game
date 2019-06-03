@@ -27,7 +27,7 @@ public class GameScreen extends ScreenAdapter {
     private static final float UNITS_PER_METER = 32F;
     private static final float UNIT_WIDTH = WORLD_WIDTH / UNITS_PER_METER;
     private static final float UNIT_HEIGHT = WORLD_HEIGHT / UNITS_PER_METER;
-    private static final float MAX_STRENGTH = 15;
+    private static final float MAX_STRENGTH = 20;
     private static final float MAX_DISTANCE = 100;
     private static final float UPPER_ANGLE = 3 * MathUtils.PI / 2f;
     private static final float LOWER_ANGLE = MathUtils.PI / 2f;
@@ -35,7 +35,7 @@ public class GameScreen extends ScreenAdapter {
 
     private World world;
     private Box2DDebugRenderer debugRenderer;
-    private Body body;
+    private Body body,bullet;
     private ShapeRenderer shapeRenderer;
     private Viewport viewport;
     private OrthographicCamera camera;
@@ -50,6 +50,7 @@ public class GameScreen extends ScreenAdapter {
     private final Vector2 firingPosition = anchor.cpy();
     private float distance;
     private float angle;
+
 
     public GameScreen(NuttyGame nuttyGame) {
         this.nuttyGame = nuttyGame;
@@ -92,7 +93,7 @@ public class GameScreen extends ScreenAdapter {
 
             @Override
             public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-                createBullet();
+                bullet=createBullet();
                 firingPosition.set(anchor.cpy());
                 return true;
             }
@@ -117,7 +118,7 @@ public class GameScreen extends ScreenAdapter {
         super.render(delta);
         update(delta);
         clearScreen();
-        draw();
+        //draw();
         drawDebug();
     }
 
@@ -136,10 +137,10 @@ public class GameScreen extends ScreenAdapter {
         batch.setProjectionMatrix(camera.projection);
         batch.setTransformMatrix(camera.view);
         orthogonalTiledMapRenderer.render();
-//
-//        batch.begin();
-//
-//        batch.end();
+
+       // batch.begin();
+
+       // batch.end();
     }
 
     private void clearScreen() {
@@ -150,11 +151,16 @@ public class GameScreen extends ScreenAdapter {
     private void update(float delta) {
         clearDeadBodies();
         world.step(delta, 6, 2);
-        box2dCam.position.set(UNIT_WIDTH / 2, UNIT_HEIGHT / 2, 0);
+        /*if(bullet!=null){
+            box2dCam.position.set(bullet.getPosition().x, bullet.getPosition().y, 0);
+        }else{
+            box2dCam.position.set(UNIT_WIDTH / 2, UNIT_HEIGHT / 2, 0);
+        }*/
+
         box2dCam.update();
     }
 
-    private void createBullet() {
+    private Body createBullet() {
         CircleShape circleShape = new CircleShape();
         circleShape.setRadius(0.5f);
         circleShape.setPosition(new Vector2(convertUnitsToMeters(firingPosition.x), convertUnitsToMeters
@@ -167,6 +173,7 @@ public class GameScreen extends ScreenAdapter {
         float velX = Math.abs( (MAX_STRENGTH * -MathUtils.cos(angle) * (distance / 100f)));
         float velY = Math.abs( (MAX_STRENGTH * -MathUtils.sin(angle) * (distance / 100f)));
         bullet.setLinearVelocity(velX, velY);
+        return bullet;
     }
 
     private void clearDeadBodies() {
