@@ -3,6 +3,7 @@ package com.dusky.game.control;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import com.dusky.game.objects.Player;
+import com.dusky.game.utils.CalculationUtil;
 
 
 public class PlayerControl implements InputProcessor {
@@ -29,9 +30,6 @@ public class PlayerControl implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
-        player.getBody().setTransform(new Vector2(screenX, screenY),0);
-
         return false;
     }
 
@@ -42,7 +40,7 @@ public class PlayerControl implements InputProcessor {
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-
+        //CalculationUtil.calculateAngleAndDistanceForBullet(screenX, screenY);
         return false;
     }
 

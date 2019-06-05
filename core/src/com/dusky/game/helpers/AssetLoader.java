@@ -14,7 +14,7 @@ public class AssetLoader {
   public static final int ANIMATION_PLAYER_FRAME_COUNT = 3;
 
   public static TextureRegion[] PLAYER;
-    public static Animation<TextureRegion> PLAYER_ANIMATION;
+  public static Animation<TextureRegion> PLAYER_ANIMATION;
 
   private AssetLoader(){
     // Empty

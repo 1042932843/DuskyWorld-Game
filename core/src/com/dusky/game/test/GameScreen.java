@@ -156,7 +156,7 @@ public class GameScreen extends ScreenAdapter {
         }else{
             box2dCam.position.set(UNIT_WIDTH / 2, UNIT_HEIGHT / 2, 0);
         }*/
-
+        box2dCam.position.set(UNIT_WIDTH / 2, UNIT_HEIGHT / 2, 0);
         box2dCam.update();
     }
 
