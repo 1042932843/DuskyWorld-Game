@@ -105,7 +105,7 @@ public class Player extends Actor {
         //创建Fixture
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;
-        fixtureDef.density = 1f;//密度
+        fixtureDef.density = 100f;//密度
         fixtureDef.friction = 1f;//摩檫力
         fixtureDef.restitution = 0.6f; // 弹力，弹走鱼尾纹
         body.createFixture(fixtureDef);//会返回一个Fixture，用不上
@@ -120,6 +120,7 @@ public class Player extends Actor {
         BodyDef bd = new BodyDef();
         bd.position.set(new Vector2(CameraUtil.convertUnitsToMeters(getX()+getWidth()), CameraUtil.convertUnitsToMeters(getY()+getHeight())));// 设置这个body初始位置
         bd.type = BodyDef.BodyType.DynamicBody;
+        bd.bullet = true;
         Body bullet = world.createBody(bd);
         bullet.createFixture(circleShape, 1);
         circleShape.dispose();
