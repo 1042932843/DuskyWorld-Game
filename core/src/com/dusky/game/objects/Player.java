@@ -11,16 +11,15 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.dusky.game.config.GameConfig;
 import com.dusky.game.objects.weapon.Weapon;
 import com.dusky.game.utils.CalculationUtil;
 import com.dusky.game.utils.CameraUtil;
 
-import static com.dusky.game.utils.CameraUtil.convertMetersToUnits;
-import static com.dusky.game.utils.CameraUtil.convertUnitsToMeters;
 
 public class Player extends Actor {
+    private World world;
     private Body body;
+    Vector2 position;
 
     private int health;//角色当前血量
     private int maxHealth;//角色最大血量
@@ -41,11 +40,11 @@ public class Player extends Actor {
         this.weapon = weapon;//装载武器
         this.animation = animation;
         this.region = animation.getKeyFrame(0);
+        this.world=world;
         setSize(this.region.getRegionWidth(), this.region.getRegionHeight());
         setName(name);
         setPosition(100,200);
-        body= createBox2dBody(world);
-        //body= createBullet(world);
+        body= createBox2dBody();
         body.setUserData(this);
     }
 
@@ -91,7 +90,7 @@ public class Player extends Actor {
         return total_Damages;
     }
 
-    private Body createBox2dBody(World world){
+    private Body createBox2dBody(){
         //创建body形状
         CircleShape circleShape = new CircleShape();
         circleShape.setRadius(CameraUtil.convertUnitsToMeters(getWidth())/2);
@@ -99,7 +98,8 @@ public class Player extends Actor {
         //创建body
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(new Vector2(CameraUtil.convertUnitsToMeters(100), CameraUtil.convertUnitsToMeters(200)));// 设置这个body初始位置
+        position=new Vector2(CameraUtil.convertUnitsToMeters(100), CameraUtil.convertUnitsToMeters(200));
+        bodyDef.position.set(position);// 设置这个body初始位置
         Body body = world.createBody(bodyDef);
 
         //创建Fixture
@@ -114,28 +114,33 @@ public class Player extends Actor {
         return body;
     }
 
-    /*private Body createBullet(World world) {
+    public Body createBullet(Vector2 firingPosition) {
         CircleShape circleShape = new CircleShape();
-        circleShape.setRadius(0.5f);
-        circleShape.setPosition(new Vector2(CameraUtil.convertUnitsToMeters(getX()), CameraUtil.convertUnitsToMeters
-                (getY())));
+        circleShape.setRadius(0.1f);
         BodyDef bd = new BodyDef();
+        bd.position.set(new Vector2(CameraUtil.convertUnitsToMeters(getX()+getWidth()), CameraUtil.convertUnitsToMeters(getY()+getHeight())));// 设置这个body初始位置
         bd.type = BodyDef.BodyType.DynamicBody;
         Body bullet = world.createBody(bd);
         bullet.createFixture(circleShape, 1);
         circleShape.dispose();
-        float velX = Math.abs( (weapon.getMAX_STRENGTH() * -MathUtils.cos(CalculationUtil.angleBetweenTwoPoints()) * (distance / 100f)));
+        float angle=CalculationUtil.angleBetweenTwoPoints(position,firingPosition);
+        float distance=CalculationUtil.distanceBetweenTwoPoints(position,firingPosition);
+        firingPosition.set(getX() + (distance * -MathUtils.cos(angle)), getY() + (distance * -MathUtils.sin(angle)));
+        float velX = Math.abs( (weapon.getMAX_STRENGTH() * -MathUtils.cos(angle) * (distance / 100f)));
         float velY = Math.abs( (weapon.getMAX_STRENGTH() * -MathUtils.sin(angle) * (distance / 100f)));
         bullet.setLinearVelocity(velX, velY);
         return bullet;
-    }*/
+    }
 
     @Override
     public void act(float delta) {
         super.act(delta);
         runTime += delta;
         if(body!=null){
-            setPosition(CameraUtil.convertMetersToUnits(body.getPosition().x-CameraUtil.convertUnitsToMeters(getWidth())/2), CameraUtil.convertMetersToUnits(body.getPosition().y)-CameraUtil.convertUnitsToMeters(getWidth())/2);
+            float newX=CameraUtil.convertMetersToUnits(body.getPosition().x-CameraUtil.convertUnitsToMeters(getWidth())/2);
+            float newY=CameraUtil.convertMetersToUnits(body.getPosition().y-CameraUtil.convertUnitsToMeters(getHeight())/2);
+            position=body.getPosition();
+            setPosition(newX,newY);
         }
     }
 
@@ -154,6 +159,10 @@ public class Player extends Actor {
                 getRotation()
         );
 
+    }
+
+    public World getWorld() {
+        return world;
     }
 
 }

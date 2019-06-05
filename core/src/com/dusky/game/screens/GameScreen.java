@@ -78,10 +78,8 @@ public class GameScreen extends ScreenAdapter {
      * 遍历玩家列表，加入舞台
      */
     private void initPlayer(){
-        PlayerControl playerControl=new PlayerControl(teamA.get(0));
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();//用来处理多个InputProcessor的情况
-        inputMultiplexer.addProcessor(playerControl);
-        Gdx.input.setInputProcessor(inputMultiplexer);
+        PlayerControl playerControl=new PlayerControl(teamA.get(0),viewport);
+        Gdx.input.setInputProcessor(playerControl);
 
         for(Player player:teamA){
             stage.addActor(player);
