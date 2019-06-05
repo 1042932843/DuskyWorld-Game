@@ -8,10 +8,18 @@ public class Weapon {
     private int speed;//速度（思必得）
     int mode;//模式（攻击模式）
 
-    public Weapon(int power, int speed, int mode) {
+    public float getMAX_STRENGTH() {
+        return MAX_STRENGTH;
+    }
+
+    private float MAX_STRENGTH=20;//最大力度
+
+
+    public Weapon(int power, int speed, int mode,float MAX_STRENGTH) {
         this.power = power;
         this.speed = speed;
         this.mode = mode;
+        this.MAX_STRENGTH=MAX_STRENGTH;
     }
 
     public int getPower() {

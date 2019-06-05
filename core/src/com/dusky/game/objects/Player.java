@@ -3,6 +3,8 @@ package com.dusky.game.objects;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -11,6 +13,11 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.dusky.game.config.GameConfig;
 import com.dusky.game.objects.weapon.Weapon;
+import com.dusky.game.utils.CalculationUtil;
+import com.dusky.game.utils.CameraUtil;
+
+import static com.dusky.game.utils.CameraUtil.convertMetersToUnits;
+import static com.dusky.game.utils.CameraUtil.convertUnitsToMeters;
 
 public class Player extends Actor {
     private Body body;
@@ -27,6 +34,7 @@ public class Player extends Actor {
 
     private float runTime;
 
+
     public Player(String name,int maxHealth, Weapon weapon, Animation<TextureRegion> animation,World world) {
         this.health=maxHealth;//初始时maxHealth=health
         this.maxHealth = maxHealth;
@@ -35,9 +43,10 @@ public class Player extends Actor {
         this.region = animation.getKeyFrame(0);
         setSize(this.region.getRegionWidth(), this.region.getRegionHeight());
         setName(name);
-        setPosition(GameConfig.WIDTH/2,GameConfig.HEIGHT/2);
+        setPosition(100,200);
         body= createBox2dBody(world);
-
+        //body= createBullet(world);
+        body.setUserData(this);
     }
 
     public Body getBody() {
@@ -83,31 +92,51 @@ public class Player extends Actor {
     }
 
     private Body createBox2dBody(World world){
+        //创建body形状
+        CircleShape circleShape = new CircleShape();
+        circleShape.setRadius(CameraUtil.convertUnitsToMeters(getWidth())/2);
+
         //创建body
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(getX(), getY());// 设置这个body初始位置
-        bodyDef.gravityScale=0.5f;
+        bodyDef.position.set(new Vector2(CameraUtil.convertUnitsToMeters(100), CameraUtil.convertUnitsToMeters(200)));// 设置这个body初始位置
         Body body = world.createBody(bodyDef);
-        CircleShape circle = new CircleShape();
-        circle.setRadius(getWidth()/2);//半径
 
         //创建Fixture
         FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = circle;
+        fixtureDef.shape = circleShape;
         fixtureDef.density = 1f;//密度
         fixtureDef.friction = 1f;//摩檫力
         fixtureDef.restitution = 0.6f; // 弹力，弹走鱼尾纹
         body.createFixture(fixtureDef);//会返回一个Fixture，用不上
-        circle.dispose();
+        circleShape.dispose();
         //body.setUserData(this);//绑定此actor（我的设计不需要，draw方法中,player自己管理自己的位置）
         return body;
     }
+
+    /*private Body createBullet(World world) {
+        CircleShape circleShape = new CircleShape();
+        circleShape.setRadius(0.5f);
+        circleShape.setPosition(new Vector2(CameraUtil.convertUnitsToMeters(getX()), CameraUtil.convertUnitsToMeters
+                (getY())));
+        BodyDef bd = new BodyDef();
+        bd.type = BodyDef.BodyType.DynamicBody;
+        Body bullet = world.createBody(bd);
+        bullet.createFixture(circleShape, 1);
+        circleShape.dispose();
+        float velX = Math.abs( (weapon.getMAX_STRENGTH() * -MathUtils.cos(CalculationUtil.angleBetweenTwoPoints()) * (distance / 100f)));
+        float velY = Math.abs( (weapon.getMAX_STRENGTH() * -MathUtils.sin(angle) * (distance / 100f)));
+        bullet.setLinearVelocity(velX, velY);
+        return bullet;
+    }*/
 
     @Override
     public void act(float delta) {
         super.act(delta);
         runTime += delta;
+        if(body!=null){
+            setPosition(CameraUtil.convertMetersToUnits(body.getPosition().x-CameraUtil.convertUnitsToMeters(getWidth())/2), CameraUtil.convertMetersToUnits(body.getPosition().y)-CameraUtil.convertUnitsToMeters(getWidth())/2);
+        }
     }
 
     @Override
@@ -115,9 +144,6 @@ public class Player extends Actor {
         super.draw(batch, parentAlpha);
         if (region == null || !isVisible()) {
             return;
-        }
-        if(body!=null){
-            setPosition(body.getPosition().x-getWidth()/2,body.getPosition().y-getHeight()/2);
         }
         batch.draw(
                 animation.getKeyFrame(runTime),
