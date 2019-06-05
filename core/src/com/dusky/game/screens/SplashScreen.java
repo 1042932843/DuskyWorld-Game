@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.dusky.game.accessors.SpriteAccessor;
 import com.dusky.game.DuskyWorld;
 import com.dusky.game.helpers.AssetLoader;
@@ -51,11 +52,10 @@ public class SplashScreen implements Screen {
   private void setupTween() {
     Tween.registerAccessor(Sprite.class, new SpriteAccessor());
     tweenManager = new TweenManager();
-
     TweenCallback cb = new TweenCallback() {
       @Override public void onEvent(int type, BaseTween<?> source) {
         //动画回调
-          game.setScreen(new GameScreen(game));
+          game.setScreen(new LoadingScreen(game));
       }
     };
 
